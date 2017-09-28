@@ -1,0 +1,127 @@
+(Print this page as a cover sheet for your printouts)
+
+CSCE 420 HOMEWORK 1
+Dr. Daugherity
+Section: ______________ 
+Due: 11:59 P.M. Monday, October 2, 2017
+
+"On my honor, as an Aggie, I have neither given nor received any unauthorized 
+aid on any portion of the academic work included in this assignment."
+
+
+________________________________	________________________________
+Typed or printed name of student	           Signature of student
+
+NOTE:  Please follow your lab instructor's directions for submitting your 
+assignment through CSNET.  ONLY ASSIGNMENTS SUBMITTED TO CSNET WILL BE GRADED!
+Make a printout of each source file and staple it behind this cover sheet.
+Sign it and turn it in in class Tuesday.  IF YOU DO NOT TURN IN A SIGNED COVER 
+SHEET YOUR WORK WILL NOT BE GRADED!
+
+NOTE:  Homework will be graded on build.tamu.edu, using g++ 7.2.0 with 
+-std=c++17, or javac and java, or python3.6 (not python or python2 or python3).
+
+You are free to develop your programs on any other platform, but it is your 
+responsibility to make sure your programs also compile and execute correctly on
+build.tamu.edu as specified.
+
+NOTE:  Each file submitted (hw1pr1.cpp, etc.--see below) must begin as follows:
+//Your name and UIN
+//CSCE 420
+//Due: Ocotber 2, 2017
+//hw1pr1.cpp (or whatever this file name is)
+
+NOTE:  Also write a README.txt file with whatever information is needed to
+compile and run your programs.  Zip the README.txt and the homework files into
+a single file named hw1.zip and submit to CSNET.
+
+The grade for this lab will be based on style (formatting, variable names, 
+comments, etc.), syntax (no compilation or link errors), and correctness 
+(passes all test cases).  Your grade for this lab is:
+Problem #	 1       2       3       4 
+Style             /2      /4      /4      /2 
+Syntax            /3      /6      /6      /3 
+Correctness       /5      /10     /10     /5
+-------------------------------------------------------------------
+Total             /10     /20     /20     /10
+Grand total _____/50
+
+1. (10 points) Given a file containing a list of points (x,y) in the plane, 
+write a greedy best-first search to find a closed path connecting all the 
+points (the "Travelling Salesperson Problem") and output its length.  You may 
+assume that x and y are non-negative integers that will fit in a 32-bit int.  
+Each line of input will be the x and y coordinates for a point; keep reading 
+until EOF.  You may assume there will be no more than 10000 points and that
+the input file will be named hw1pr1_data.txt.
+
+For example, if the input file contains
+0 0
+0 1
+1 1
+1 2
+the output is (probably) 5.236.
+
+The run time should be 60 seconds or less for up to 10000 points.  Hint: use 
+the UNIX timeout command to automatically stop execution after 60 seconds.  
+Name your program hw1pr1.cpp or Hw1Pr1.java or hw1pr1.py.
+
+2. (20 points) The shortest closed path for the example points in problem 1 is
+actually 4.828.  In other words, greeedy best-first search did not find the
+shortest path.  Modify your program for problem 1 to do an iterative deepening 
+search to the depth of the number of points, with the path cost the total 
+distance.  To keep the search space manageable only include the 4 nearest 
+unvisited points as successors when you expand a node.
+
+The run time should be 60 seconds or less for up to 10000 points.  Hint: use 
+the UNIX timeout command to automatically stop execution after 60 seconds.  
+Name your program hw1pr2.cpp or Hw1Pr2.java or hw1pr2.py.
+
+3. (20 points)  Write a breadth-first search program to solve 15-puzzle problems
+in the same way as the 8-puzzle in Figure 3.4 on page 71.  Keep track of the 
+number of nodes expanded and print that out along with the steps to solve the 
+problem.  Define the legal moves as "swap the blank with an adjacent tile,"
+resulting in the blank's moving up, down, left, or right.  A sample run should 
+look like this:
+
+	Enter 15-puzzle starting state by rows (0 for blank):
+	1,2,3,4,5,6,7,8,9,10,0,11,13,14,15,12
+	Enter ending state by rows (0 for blank): 
+	1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0
+	Solution: 
+		Start	 1  2  3  4
+			 5  6  7  8
+			 9 10  0 11
+			13 14 15 12
+	Swap the blank
+		Right	 1  2  3  4
+			 5  6  7  8
+			 9 10 11  0
+			13 14 15 12
+			
+		Down	 1  2  3  4
+			 5  6  7  8
+			 9 10 11 12
+			13 14 15  0
+
+	Done!  Generated xx states.
+
+Note: To keep the time and memory requirements reasonable, your program only 
+needs to solve 15-puzzle problems which have a solution in 10 moves or less.
+Name your program Hw1Pr3.java or hw1pr3.cpp or hw1pr3.py.
+
+OPTIONAL EXTRA CREDIT 
+=====================
+4. (10 points)  Modify problem 3 to use A* or IDA* search with Manhattan
+distance for h; e.g., the starting state on page 103 has a Manhattan distance 
+of 18 from the goal state (the sum of the number of rows and columns each tile 
+must move from its starting position to its ending position).  You should see 
+a marked reduction in the number of states generated, especially for problems 
+which require more moves.  Here is a puzzle which requires 80 moves:
+
+	Enter 15-puzzle starting state by rows (0 for blank):
+	0,12,11,13,15,14,10,9,3,7,6,2,4,8,5,1
+	Enter ending state by rows (0 for blank): 
+	1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0
+
+Your program should solve it in 60 seconds or less.  Name your program 
+Hw1Pr4.java or hw1pr4.cpp or hw1pr4.py.
