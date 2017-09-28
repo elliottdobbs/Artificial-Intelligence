@@ -8,8 +8,11 @@
 #include <stdio.h>
 #include <iostream>
 #include <fstream>
+using namespace std;
 
 int main(){
-    howudyu
+
+    cout << "howdy" << endl;
+    
     return 1;
 }
