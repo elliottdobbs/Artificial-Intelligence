@@ -1,7 +1,7 @@
 //Elliott Dobbs 823004322
 //CSCE 420
 //Due: October 2, 2017
-//hw1pr1.cpp
+//hw1pr2.cpp
 
 #include <stdio.h>
 #include <iostream>
@@ -100,3 +100,4 @@ int main(){
     
     return 1;
 }
+

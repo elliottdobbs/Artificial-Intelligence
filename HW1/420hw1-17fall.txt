@@ -48,7 +48,7 @@ Grand total _____/50
 
 1. (10 points) Given a file containing a list of points (x,y) in the plane, 
 write a greedy best-first search to find a closed path connecting all the 
-points (the "Travelling Salesperson Problem") and output its length.  You may 
+points (the "Traveling Salesperson Problem") and output its length.  You may 
 assume that x and y are non-negative integers that will fit in a 32-bit int.  
 Each line of input will be the x and y coordinates for a point; keep reading 
 until EOF.  You may assume there will be no more than 10000 points and that
@@ -66,7 +66,7 @@ the UNIX timeout command to automatically stop execution after 60 seconds.
 Name your program hw1pr1.cpp or Hw1Pr1.java or hw1pr1.py.
 
 2. (20 points) The shortest closed path for the example points in problem 1 is
-actually 4.828.  In other words, greeedy best-first search did not find the
+actually 4.828.  In other words, greedy best-first search did not find the
 shortest path.  Modify your program for problem 1 to do an iterative deepening 
 search to the depth of the number of points, with the path cost the total 
 distance.  To keep the search space manageable only include the 4 nearest 
