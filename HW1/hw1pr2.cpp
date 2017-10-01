@@ -170,9 +170,7 @@ double findBestPath(int pointIter, Point p[]){
 }
 
 int main(){
-    
-    timeout(60);
-    
+        
     //setting up point array
     Point p;
     p.x = -1;
