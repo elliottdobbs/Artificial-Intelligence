@@ -22,6 +22,19 @@ double pointDist(Point p1, Point p2){
                 (p1.y - p2.y)*(p1.y - p2.y));
 }
 
+Point* copyPointArray(Point p[]){
+    
+    Point *result = new Point[10000];
+    
+    for (int i = 0; i < 10000; i++){
+        result[i].x = p[i].x;
+        result[i].y = p[i].y;
+        result[i].checked = p[i].checked;
+    }
+    
+    return result;
+}
+
 int* fourClosestPoints(Point p[], int iter){
     
     int i = 0;
@@ -33,6 +46,7 @@ int* fourClosestPoints(Point p[], int iter){
     // and all other non visited points to return the iteration
     // location of the closest point
     while(p[i].x != -1){
+        //cout << i << " : " << p[i].checked << endl;
         if (p[i].checked){
             ++i;
             continue;
@@ -46,7 +60,7 @@ int* fourClosestPoints(Point p[], int iter){
             p[i].checked = true;
         }
         //if there is something, check if its shorter than the found one
-        else if (tempDis < pointDist(p[result[0]], p[iter]){
+        else if (tempDis < pointDist(p[result[0]], p[iter])){
             
             //if we have a new shortest distance, shift the
             // rest of the shortest points to make room
@@ -60,11 +74,7 @@ int* fourClosestPoints(Point p[], int iter){
             result[1] = i;
             p[i].checked = true;
         }
-                 //keep replacing the sqrt with enw function
-        else if (tempDis < sqrt((p[result[1]].x - p[iter].x)*
-                                (p[result[1]].x - p[iter].x) +
-                                (p[result[1]].y - p[iter].y)*
-                                (p[result[1]].y - p[iter].y))){
+        else if (tempDis < pointDist(p[result[1]], p[iter])){
             result[3] = result[2];
             result[2] = result[1];
             result[1] = i;
@@ -73,10 +83,7 @@ int* fourClosestPoints(Point p[], int iter){
             result[2] = i;
             p[i].checked = true;
         }
-        else if (tempDis < sqrt((p[result[2]].x - p[iter].x)*
-                                (p[result[2]].x - p[iter].x) +
-                                (p[result[2]].y - p[iter].y)*
-                                (p[result[2]].y - p[iter].y))){
+        else if (tempDis < pointDist(p[result[2]], p[iter])){
             result[3] = result[2];
             result[2] = i;
         }
@@ -84,10 +91,7 @@ int* fourClosestPoints(Point p[], int iter){
             result[3] = i;
             p[i].checked = true;
         }
-        else if (tempDis < sqrt((p[result[3]].x - p[iter].x)*
-                                (p[result[3]].x - p[iter].x) +
-                                (p[result[3]].y - p[iter].y)*
-                                (p[result[3]].y - p[iter].y))){
+        else if (tempDis < pointDist(p[result[3]], p[iter])){
             result[3] = i;
         }
         
@@ -95,6 +99,77 @@ int* fourClosestPoints(Point p[], int iter){
     }
     
     return result;
+}
+
+double findBestPath(int pointIter, Point p[]){
+    
+    Point* tempPointArray = copyPointArray(p);
+    int *closestPoints = fourClosestPoints(tempPointArray, pointIter);
+    //cout << closestPoints[0] << " : " << closestPoints[1] << " : " << closestPoints[2] << " : " << closestPoints[3] << endl;
+    //cout << p[closestPoints[0]].checked << " : " << p[closestPoints[1]].checked << " : " << p[closestPoints[2]].checked << " : " << p[closestPoints[3]].checked << endl;
+    
+    //base case: only 1 point left to check
+    if (closestPoints[1] == -1){
+        //cout << p[pointIter].x << ":" << p[pointIter].y << "..." << p[closestPoints[0]].x << ":" << p[closestPoints[0]].y << " ::: " << pointDist(p[pointIter], p[closestPoints[0]]) << endl;
+        return pointDist(p[pointIter], p[closestPoints[0]]) +
+               pointDist(p[closestPoints[0]], p[0]);
+    }
+    
+    //first point
+    p[closestPoints[0]].checked = true;
+    double dist1 = pointDist(p[pointIter], p[closestPoints[0]]) +
+                   findBestPath(closestPoints[0], p);
+    p[closestPoints[0]].checked = false;
+    
+    //second point
+    p[closestPoints[1]].checked = true;
+    double dist2 = pointDist(p[pointIter], p[closestPoints[1]]) +
+                   findBestPath(closestPoints[1], p);
+    p[closestPoints[1]].checked = false;
+    
+    double dist3 = DBL_MAX;
+    double dist4 = DBL_MAX;
+    
+    //if there is a 3rd point
+    if (closestPoints[2] != -1){
+        p[closestPoints[2]].checked = true;
+        dist3 = pointDist(p[pointIter], p[closestPoints[2]]) +
+                findBestPath(closestPoints[2], p);
+        p[closestPoints[2]].checked = false;
+    }
+    
+    //if their is a fourth point
+    if (closestPoints[3] != -1){
+        p[closestPoints[3]].checked = true;
+        dist4 = pointDist(p[pointIter], p[closestPoints[3]]) +
+                findBestPath(closestPoints[3], p);
+        p[closestPoints[3]].checked = false;
+    }
+    
+    if (dist1 <= dist2){
+        if (dist3 <= dist4){
+            if (dist1 < dist3)
+                return dist1;
+            else
+                return dist3;
+        }
+        else if (dist1 <= dist4)
+            return dist1;
+        else
+            return dist4;
+    }
+    else{
+        if (dist3 <= dist4){
+            if (dist2 < dist3)
+                return dist2;
+            else
+                return dist3;
+        }
+        else if (dist2 <= dist4)
+            return dist2;
+        else
+            return dist4;
+    }
 }
 
 int main(){
@@ -121,48 +196,12 @@ int main(){
     }
     myfile.close();
     
-    //Start with the first point and get the closest point to it
-    // Then add the distance to the total distance, and keep going
+    //Call the recursive function on the first point
     points[0].checked = true;
-    i = 0;
-    double totalDist = 0.0;
-    
-    //maybe recursive function here instead of loop
-    /*
-     so here we have
-         closestPoints : the 4 closest points of the start point
-         points[] : with all the points and only first point marked as checked
-     
-     
-     -a recursion will have base cases, closestPoints size 1
-         -this means we are at a last point
-         -so we need send the distance from this node to the start node,
-         -(and the dist from the prev to this node?)
-     -we return the distance of
-     */
-    while (true){
-        int *closestPoints = fourClosestPoints(points, i);
-        
-        if (closestPoints[0] == -1)
-            break;
-
-        points[closestP].checked = true;
-        totalDist += sqrt((points[closestP].x - points[i].x)*
-                          (points[closestP].x - points[i].x) +
-                          (points[closestP].y - points[i].y)*
-                          (points[closestP].y - points[i].y));
-        i = closestP;
-    }
-
-    //Once all points are checked, add on the last distance of the last
-    //  visited point to the starting points
-    totalDist += sqrt((points[0].x - points[i].x)*
-                      (points[0].x - points[i].x) +
-                      (points[0].y - points[i].y)*
-                      (points[0].y - points[i].y));
+    double totalDist = findBestPath(0, points);
 
     //Display the result
-    cout << "\nThe distance of the greedy best-first search algorithm solution is: " << totalDist << endl << endl;
+    cout << "\nThe distance of the 4 best-first search algorithm solution is: " << totalDist << endl << endl;
     
     return 1;
 }
