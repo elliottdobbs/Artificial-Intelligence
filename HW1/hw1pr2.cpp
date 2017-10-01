@@ -105,12 +105,9 @@ double findBestPath(int pointIter, Point p[]){
     
     Point* tempPointArray = copyPointArray(p);
     int *closestPoints = fourClosestPoints(tempPointArray, pointIter);
-    //cout << closestPoints[0] << " : " << closestPoints[1] << " : " << closestPoints[2] << " : " << closestPoints[3] << endl;
-    //cout << p[closestPoints[0]].checked << " : " << p[closestPoints[1]].checked << " : " << p[closestPoints[2]].checked << " : " << p[closestPoints[3]].checked << endl;
     
     //base case: only 1 point left to check
     if (closestPoints[1] == -1){
-        //cout << p[pointIter].x << ":" << p[pointIter].y << "..." << p[closestPoints[0]].x << ":" << p[closestPoints[0]].y << " ::: " << pointDist(p[pointIter], p[closestPoints[0]]) << endl;
         return pointDist(p[pointIter], p[closestPoints[0]]) +
                pointDist(p[closestPoints[0]], p[0]);
     }
@@ -174,6 +171,8 @@ double findBestPath(int pointIter, Point p[]){
 
 int main(){
     
+    timeout(60);
+    
     //setting up point array
     Point p;
     p.x = -1;
@@ -184,7 +183,7 @@ int main(){
     
     //getting input file into Points array structure
     ifstream myfile;
-    myfile.open ("hw1pr1_data.txt");
+    myfile.open ("hw1pr2_data.txt");
     int i = 0;
     int num;
     while(myfile >> num){
