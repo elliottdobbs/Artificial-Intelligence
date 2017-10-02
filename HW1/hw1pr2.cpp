@@ -101,6 +101,8 @@ int* fourClosestPoints(Point p[], int iter){
     return result;
 }
 
+//Redo this? at the base case check if the total length (probly a passed in variable)
+// is smaller than the previous
 double findBestPath(int pointIter, Point p[]){
     
     Point* tempPointArray = copyPointArray(p);
