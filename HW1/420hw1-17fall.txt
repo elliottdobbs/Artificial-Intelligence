@@ -1,9 +1,9 @@
 (Print this page as a cover sheet for your printouts)
 
-CSCE 420 HOMEWORK 1
+CSCE 420 HOMEWORK 1 (UPDATED) (EXTENDED)
 Dr. Daugherity
 Section: ______________ 
-Due: 11:59 P.M. Monday, October 2, 2017
+Due: 11:59 P.M. Wednesday, October 4, 2017
 
 "On my honor, as an Aggie, I have neither given nor received any unauthorized 
 aid on any portion of the academic work included in this assignment."
@@ -15,7 +15,7 @@ Typed or printed name of student	           Signature of student
 NOTE:  Please follow your lab instructor's directions for submitting your 
 assignment through CSNET.  ONLY ASSIGNMENTS SUBMITTED TO CSNET WILL BE GRADED!
 Make a printout of each source file and staple it behind this cover sheet.
-Sign it and turn it in in class Tuesday.  IF YOU DO NOT TURN IN A SIGNED COVER 
+Sign it and turn it in in class Thursday.  IF YOU DO NOT TURN IN A SIGNED COVER 
 SHEET YOUR WORK WILL NOT BE GRADED!
 
 NOTE:  Homework will be graded on build.tamu.edu, using g++ 7.2.0 with 
@@ -28,7 +28,7 @@ build.tamu.edu as specified.
 NOTE:  Each file submitted (hw1pr1.cpp, etc.--see below) must begin as follows:
 //Your name and UIN
 //CSCE 420
-//Due: Ocotber 2, 2017
+//Due: Ocotber 4, 2017
 //hw1pr1.cpp (or whatever this file name is)
 
 NOTE:  Also write a README.txt file with whatever information is needed to
@@ -59,7 +59,13 @@ For example, if the input file contains
 0 1
 1 1
 1 2
-the output is (probably) 5.236.
+
+the output to the screen is (probably) 
+0 0
+0 1
+1 1
+1 2
+5.236
 
 The run time should be 60 seconds or less for up to 10000 points.  Hint: use 
 the UNIX timeout command to automatically stop execution after 60 seconds.  

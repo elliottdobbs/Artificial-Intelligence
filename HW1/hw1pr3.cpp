@@ -52,6 +52,8 @@ int b5tob10(vector<int> vec){
 vector<int> b10tob5(int num){
     
     cout << 'A' << endl << num << endl;
+    
+    cout << 'B' << endl;
     int i = 0;
     vector<int> result;
     double howdy;
@@ -84,6 +86,7 @@ int blankSpot(vector<int> state){
     return result;
 }
 
+//Checks if a given vector contains any 0s
 bool checkZeros(vector<int> vec){
     
     for (int i = 0; i < vec.size(); i++){
@@ -175,40 +178,49 @@ int main(){
     //Getting the input state
     string input;
     vector<int> inputState, endingState;
-    cout << "Enter 15-puzzle starting state by rows, separated by commas (0 for blank):" << endl;
-    cin >> input;
-    stringstream in(input);
-
-    int i;
-    while (in >> i){
-        inputState.push_back(i);
-        if (in.peek() == ',')
-            in.ignore();
-    }
-    if(inputState.size() != 16){
-        cout << "Invalid state entered.  Exiting" << endl;
-        return 0;
-    }
-
-    //Getting the ending state
-    cout << "Enter ending state by rows, separated by commas (0 for blank):" << endl;
-    cin >> input;
-    stringstream end(input);
-
-    while (end >> i){
-        endingState.push_back(i);
-        if (end.peek() == ',')
-            end.ignore();
-    }
-    if(endingState.size() != 16){
-        cout << "Invalid state entered.  Exiting" << endl;
-        return 0;
-    }
-    
-    if (inputState == endingState){
-        cout << "Input and ending state are the same. exiting" << endl;
-        return 1;
-    }
+//    cout << "Enter 15-puzzle starting state by rows, separated by commas (0 for blank):" << endl;
+//    cin >> input;
+//    stringstream in(input);
+//
+//    int i;
+//    while (in >> i){
+//        inputState.push_back(i);
+//        if (in.peek() == ',')
+//            in.ignore();
+//    }
+//    if(inputState.size() != 16){
+//        cout << "Invalid state entered.  Exiting" << endl;
+//        return 0;
+//    }
+//
+//    //Getting the ending state
+//    cout << "Enter ending state by rows, separated by commas (0 for blank):" << endl;
+//    cin >> input;
+//    stringstream end(input);
+//
+//    while (end >> i){
+//        endingState.push_back(i);
+//        if (end.peek() == ',')
+//            end.ignore();
+//    }
+//    if(endingState.size() != 16){
+//        cout << "Invalid state entered.  Exiting" << endl;
+//        return 0;
+//    }
+//
+//    if (inputState == endingState){
+//        cout << "Input and ending state are the same. exiting" << endl;
+//        return 1;
+//    }
+    inputState.push_back(1);inputState.push_back(2);inputState.push_back(3);inputState.push_back(4);
+    inputState.push_back(0);inputState.push_back(6);inputState.push_back(11);inputState.push_back(7);
+    inputState.push_back(5);inputState.push_back(9);inputState.push_back(10);inputState.push_back(8);
+    inputState.push_back(13);inputState.push_back(14);inputState.push_back(15);inputState.push_back(12);
+   
+    endingState.push_back(1);endingState.push_back(2);endingState.push_back(3);endingState.push_back(4);
+    endingState.push_back(5);endingState.push_back(6);endingState.push_back(7);endingState.push_back(8);
+    endingState.push_back(9);endingState.push_back(10);endingState.push_back(11);endingState.push_back(12);
+    endingState.push_back(13);endingState.push_back(14);endingState.push_back(15);endingState.push_back(0);
     
     int solution = 1;
     solution = BFS(inputState, endingState, solution);
