@@ -99,7 +99,7 @@ int main(){
     totalDist += pointDist(points[0], points[i]);
     
     //Display the result
-    cout << "\nThe distance of the greedy best-first search algorithm solution is: " << totalDist << endl << endl;
+    cout << "\nThe distance of the greedy best-first search algorithm solution is: " << totalDist << endl;
     
     return 1;
 }
