@@ -1,6 +1,6 @@
 //Elliott Dobbs 823004322
 //CSCE 420
-//Due: October 2, 2017
+//Due: October 4, 2017
 //hw1pr2.cpp
 
 #include <stdio.h>
@@ -185,14 +185,6 @@ int main(){
     partialTotal = 0;
     minTotalFound = DBL_MAX;
     
-    //FOR GENERATING RANDOM POINTS
-    ofstream myfile1;
-    myfile1.open("hw1pr2_data.txt");
-    for (int r = 0; r < 18; r++){
-        myfile1 << rand() % 1000 << " " << rand() % 1000 << '\n';
-    }
-    myfile1.close();
-    
     //getting input file into Points vector
     ifstream myfile;
     myfile.open ("hw1pr2_data.txt");
@@ -231,15 +223,6 @@ int main(){
     for (int i = 0; i < distances.size(); i++){
         sort(sortedDistances[i].begin(), sortedDistances[i].end());
     }
-    
-    cout << "\nMatrix created. \n";
-    
-//    for (int i = 0; i < distances.size(); i++){
-//        for (int j = 0; j < distances[i].size(); j++){
-//            cout << distances[i][j][0] << "/" << distances[i][j][1] << " : ";
-//        }
-//        cout << endl << endl;
-//    }
     
     points[0].checked = true;
     vector<Point> temp = points;
