@@ -188,7 +188,7 @@ int main(){
     //FOR GENERATING RANDOM POINTS
     ofstream myfile1;
     myfile1.open("hw1pr2_data.txt");
-    for (int r = 0; r < 19; r++){
+    for (int r = 0; r < 18; r++){
         myfile1 << rand() % 1000 << " " << rand() % 1000 << '\n';
     }
     myfile1.close();
