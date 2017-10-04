@@ -1,6 +1,6 @@
 //Elliott Dobbs 823004322
 //CSCE 420
-//Due: October 2, 2017
+//Due: October 4, 2017
 //hw1pr1.cpp
 
 #include <stdio.h>
@@ -12,17 +12,21 @@
 #include <stdlib.h>
 using namespace std;
 
+//Point structure
 struct Point{
     int x;
     int y;
     bool checked;
 };
 
+//Simple distance formula implementation
 double pointDist(Point p1, Point p2){
     return sqrt((p1.x - p2.x)*(p1.x - p2.x) +
                 (p1.y - p2.y)*(p1.y - p2.y));
 }
 
+//Algorithm to find the iteration location of the
+// closest unckecked point in the point array
 int closestPoint(Point p[], int iter){
     
     int i = 0;
@@ -60,14 +64,6 @@ int main(){
     Point points[10000];
     fill_n(points, 10000, p);
     
-    //FOR GENERATIUNG RANDOM POINTS
-//    ofstream myfile1;
-//    myfile1.open("hw1pr1_data.txt");
-//    for (int r = 0; r < 10000; r++){
-//        myfile1 << rand() % 1000 << " " << rand() % 1000 << '\n';
-//    }
-//    myfile1.close();
-    
     //getting input file into Points array structure
     ifstream myfile;
     myfile.open("hw1pr1_data.txt");
@@ -82,8 +78,8 @@ int main(){
     }
     myfile.close();
     
-    //Start with the first point and get the closest point to it
-    // Then add the distance to the total distance, and keep going
+    //Start with the first point and get the closest point to it,
+    // add the distance to the total distance, and keep going
     points[0].checked = true;
     i = 0;
     double totalDist = 0.0;
