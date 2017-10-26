@@ -1,0 +1,110 @@
+(Print this page as a cover sheet for your printouts)
+
+CSCE 420 HOMEWORK 2
+Dr. Daugherity
+Due: 11:59 P.M. Monday, October 30, 2017
+
+"On my honor, as an Aggie, I have neither given nor received any unauthorized 
+aid on any portion of the academic work included in this assignment."
+
+
+________________________________	________________________________
+Typed or printed name of student	           Signature of student
+
+NOTE:  Please follow your lab instructor's directions for submitting your 
+assignment through CSNET.  ONLY ASSIGNMENTS SUBMITTED TO CSNET WILL BE GRADED!
+Make a printout of each source file and staple it behind this cover sheet.
+Sign it and turn it in in class Tuesday.  IF YOU DO NOT TURN IN A SIGNED COVER 
+SHEET YOUR WORK WILL NOT BE GRADED!
+
+NOTE:  Homework will be graded on build.tamu.edu, using g++ 7.2.0 with 
+-std=c++17, or javac and java, or python3.
+
+You are free to develop your programs on any other platform, but it is your 
+responsibility to make sure your programs also compile and execute correctly on
+build.tamu.edu as specified.
+
+NOTE:  Each file submitted (hw2pr1.cpp, etc.--see below) must begin as follows:
+//Your name and UIN
+//CSCE 420
+//Due: Ocotber 2, 2017
+//hw2pr1.cpp (or whatever this file name is)
+
+NOTE:  Also write a README.txt file with whatever information is needed to
+compile and run your programs.  Zip the README.txt and the homework files into
+a single file named hw2.zip and submit to CSNET.
+
+The grade for this lab will be based on style (formatting, variable names, 
+comments, etc.), syntax (no compilation or link errors), and correctness 
+(passes all test cases).  Your grade for this lab is:
+Problem #	 1       2       3       4 
+Style             /2      /4      /4      /2 
+Syntax            /3      /6      /6      /3 
+Correctness       /5      /10     /10     /5
+-------------------------------------------------------------------
+Total             /10     /20     /20     /10
+Grand total _____/50
+
+1. (10 points) Code the mutually-recursive max_value and min_value functions
+specified in Figure 5.3 and use them to find the max (root's value) 
+of a tree read in from the keyboard as a nested list.  For example, the tree in Figure 5.2 would be input as
+	((3,12,8),(2,4,6),(14,5,2))
+Name your program hw2pr1.cpp, etc.
+
+2. (20 points) Modify problem 1 to do both alpha and beta pruning according to
+Figure 5.7 and print a message "alpha pruning" or "beta pruning" each time that
+occurs (in addition to the max of the tree).  For example, the tree
+	((3,8,(7,(3,0,7),(8,8,2))),
+	 (4,(7,9,8),8),
+	 (((3,6,4),2,6),((9,2,9),4,7,(6,4,5) ),4,(6,4,5))
+	)
+would print "alpha pruning" 3 times and "beta pruning" 3 times.
+Name your program hw2pr2.cpp, etc.
+
+3. (20 points) Write a Horn clause inference engine which accepts a filename
+from the user, reads Horn clauses from that file, and then makes all possible 
+deductions using forward chaining.  The format of the input file will be one 
+Horn clause per line in PROLOG notation (see section 9.4.2).  For example, if
+the data file contains
+
+	B:-A.
+	D:-B,C.
+	A.
+	C.
+
+then the program will deduce B and D are true.  For another test file use
+Fig. 7.15.  
+
+Name your program hw2pr3.cpp etc.  Hint: Fig. 7.14 gives the pseudocode.
+
+OPTIONAL EXTRA CREDIT 
+=====================
+4. (10 points) Write a backtracking prover based on the DPLL_satisfiable
+function in Fig. 7.17 which first reads Horn clauses as in the example from
+problem 3, then a query preceded by a question mark (that is, what you are
+asking to be proven).
+
+	B:-A.
+	D:-B,C.
+	A.
+	C.
+	?D
+
+To prove D is equivalent to saying the Horn clauses entail (imply) D.  Since an
+implication is only false if the "if" side is true and the "then" side is false,
+we add "not D" to the list of Horn clauses and call DPLL_satisfiable.  If it
+returns false, that means "not not D" must be true, which is D, which is what
+we were trying to prove, so output "Proven!"  If the query had been E then
+adding "not E" and calling DPLL_satisfiable would result in true, so output
+"Cannot prove."
+
+Hint: In PROLOG notation "not D" can be written
+	:-D.
+Since the "then" side can always be or'ed with false, this is equivalent to
+	D --> false
+which is equivalent to "not D."  Another way of thinking about it is that the
+"then" side of a Horn clause is false or'ed with whatever terms are there (in
+this case none).
+
+Name your program hw2pr4.cpp etc.
+
