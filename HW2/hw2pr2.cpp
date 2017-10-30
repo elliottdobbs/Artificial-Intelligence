@@ -113,10 +113,8 @@ void maxValue(Node* n, int a, int b){
             else{
                 if (a >= n->subtrees[i].value)
                     continue;
-                else{
-                    b = INT_MAX;
+                else
                     a = n->subtrees[i].value;
-                }
             }
         }
         
@@ -148,9 +146,8 @@ void minValue(Node* n, int a, int b){
             else{
                 if (b <= n->subtrees[i].value)
                     continue;
-                else{
+                else
                     b = n->subtrees[i].value;
-                }
             }
         }
         

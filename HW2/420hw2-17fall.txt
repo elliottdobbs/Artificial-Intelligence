@@ -104,4 +104,3 @@ which is equivalent to "not D."  Another way of thinking about it is that the
 this case none).
 
 Name your program hw2pr4.cpp etc.
-

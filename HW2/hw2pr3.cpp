@@ -133,16 +133,18 @@ int main(){
     
     //Getting input file
     ifstream myfile;
-    myfile.open("hw2pr3_data.txt");
-    string input;
+    string inputFile, inputLine;
+    cout << "Enter a file to be used:";
+    cin >> inputFile;
+    myfile.open(inputFile);
     vector<Symbol> tempSymbols;
     bool foundFlag;
     
     //Each line of the file processed
-    while(myfile >> input){
+    while(myfile >> inputLine){
         
         //Get list of symbols from this input line
-        tempSymbols = getSymbols(input);
+        tempSymbols = getSymbols(inputLine);
         foundFlag = false;
         vector<int> tempVec;
         
