@@ -54,10 +54,7 @@ Name your program hw2pr1.cpp, etc.
 2. (20 points) Modify problem 1 to do both alpha and beta pruning according to
 Figure 5.7 and print a message "alpha pruning" or "beta pruning" each time that
 occurs (in addition to the max of the tree).  For example, the tree
-	((3,8,(7,(3,0,7),(8,8,2))),
-	 (4,(7,9,8),8),
-	 (((3,6,4),2,6),((9,2,9),4,7,(6,4,5) ),4,(6,4,5))
-	)
+	((3,8,(7,(3,0,7),(8,8,2))),(4,(7,9,8),8),(((3,6,4),2,6),((9,2,9),4,7,(6,4,5)),4,(6,4,5)))
 would print "alpha pruning" 3 times and "beta pruning" 3 times.
 Name your program hw2pr2.cpp, etc.
 

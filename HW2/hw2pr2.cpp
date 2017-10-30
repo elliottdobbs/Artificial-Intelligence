@@ -41,7 +41,7 @@ void createTree(string input, Node* current){
     //Get the next character
     string symbol = input.substr(0, 1);
     input.erase(input.begin());
-
+    
     //Actions based on what character is next
     // If this, create a new subtree and go to it (first location in subtrees)
     if (symbol == "("){
@@ -87,21 +87,37 @@ void createTree(string input, Node* current){
 }
 
 //Forward declaration for use in maxValue
-void minValue(Node* n);
+void minValue(Node* n, int a, int b);
 
 //Recursive call to get the maximum subtree value for the given node
-void maxValue(Node* n){
+void maxValue(Node* n, int a, int b){
     
-    //If the number is -1, we need to get the value for it by
+    //If the number is NULL, we need to get the value for it by
     //  calling minValue() for each subtree
     if (n->value == (int)NULL){
         
         int max = INT_MIN;
         for (int i = 0; i < n->subtrees.size(); ++i){
             
-            minValue(&n->subtrees[i]);
+            minValue(&n->subtrees[i], a, b);
             if (n->subtrees[i].value > max)
                 max = n->subtrees[i].value;
+            
+            //If we a value in a  max level branch that is greater than beta, then we do not need to search more since the max function will return this value even though it is greater then what min will pick
+            if (n->subtrees[i].value >= b){
+                cout << "Beta Pruning..." << endl;
+                break;
+            }
+            
+            //Get a new alpha value if there is one (and reset beta)
+            else{
+                if (a >= n->subtrees[i].value)
+                    continue;
+                else{
+                    b = INT_MAX;
+                    a = n->subtrees[i].value;
+                }
+            }
         }
         
         n->value = max;
@@ -109,18 +125,33 @@ void maxValue(Node* n){
 }
 
 //Recursive call to get the minimum subtree value for the given node
-void minValue(Node* n){
+void minValue(Node* n, int a, int b){
     
-    //If the number is -1, we need to get the value for it by
+    //If the number is NULL, we need to get the value for it by
     //  calling maxValue() for each subtree
     if (n->value == (int)NULL){
         
         int min = INT_MAX;
         for (int i = 0; i < n->subtrees.size(); ++i){
             
-            maxValue(&n->subtrees[i]);
+            maxValue(&n->subtrees[i], a, b);
             if (n->subtrees[i].value < min)
                 min = n->subtrees[i].value;
+            
+            //If we reach a value in a min level branch that is less than alpha, then we do not need to search more since the min function will return this value even though it is less then what max will pick
+            if (n->subtrees[i].value <= a){
+                cout << "Alpha Pruning..." << endl;
+                break;
+            }
+            
+            //Get a new beta value if there is one
+            else{
+                if (b <= n->subtrees[i].value)
+                    continue;
+                else{
+                    b = n->subtrees[i].value;
+                }
+            }
         }
         
         n->value = min;
@@ -137,10 +168,13 @@ int main(){
     Node root;
     root.parent = NULL;
     root.value = (int)NULL;
+    int alpha = INT_MIN, beta = INT_MAX;
+    
+    cout << endl << endl;
     
     createTree(input, &root);
-    maxValue(&root);
-
+    maxValue(&root, alpha, beta);
+    
     cout << endl << endl;
     cout << "The value of the root node is: " << root.value << endl << endl;
     
