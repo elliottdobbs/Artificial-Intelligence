@@ -1,0 +1,156 @@
+(Print this page as a cover sheet for your printouts)
+
+CSCE 420 HOMEWORK 3
+Dr. Daugherity
+Due: 11:59 P.M. Wednesday, November 15, 2017
+
+"On my honor, as an Aggie, I have neither given nor received any unauthorized 
+aid on any portion of the academic work included in this assignment."
+
+
+________________________________	________________________________
+Typed or printed name of student	           Signature of student
+
+NOTE:  Please follow your lab instructor's directions for submitting your 
+assignment through CSNET.  ONLY ASSIGNMENTS SUBMITTED TO CSNET WILL BE GRADED!
+Make a printout of each source file and staple it behind this cover sheet.
+Sign it and turn it in in class Tuesday.  IF YOU DO NOT TURN IN A SIGNED COVER 
+SHEET YOUR WORK WILL NOT BE GRADED!
+
+NOTE:  Homework will be graded on build.tamu.edu using gprolog 1.4.4.
+
+You are free to develop your programs on any other platform, but it is your 
+responsibility to make sure your programs also compile and execute correctly on
+build.tamu.edu as specified.
+
+NOTE:  Each file submitted (hw3pr1.pl, etc.--see below) must begin as follows:
+//Your name and UIN
+//CSCE 420
+//Due: November 15, 2017
+//hw3pr1.pl (or whatever this file name is)
+
+NOTE:  Also write a README.txt file with whatever information is needed to
+compile and run your programs.  Zip the README.txt and the homework files into
+a single file named hw3.zip and submit to CSNET.
+
+The grade for this lab will be based on style (formatting, variable names, 
+comments, etc.), syntax (no compilation or link errors), and correctness 
+(passes all test cases).  Your grade for this lab is:
+Problem #	 1       2       3       4 
+Style             /2      /4      /4      /2 
+Syntax            /3      /6      /6      /3 
+Correctness       /5      /10     /10     /5
+-------------------------------------------------------------------
+Total             /10     /20     /20     /10
+Grand total _____/50
+
+1. (10 points) Use the my_max predicate developed in lecture to write a PROLOG
+predicate my_sort(Unsorted, Sorted) using the following pseudocode outline:
+
+Base cases go first.
+my_sort(Unsorted, Sorted) :- Max is the largest element of Unsorted and
+    Unsorted2 is what is left after removing Max from Unsorted and
+    the sorted version of Unsorted2 is Sorted2 and
+    Sorted2 is Sorted without its last element Max.
+
+Hint: Use the builtin append and select predicates.
+
+Name your program hw3pr1.pl.  Don't forget to try lots of test cases, like 
+sorting [2, 1, 1, 3, 2].  You can check your sort against the builtin predicate
+msort (not sort).
+
+Note:  This is an inefficient way to do max and sort; the point of this problem
+is to learn to think in PROLOG (i.e., recursively).
+
+2. (20 points) Modify problem 1 to do a topological sort of a partial order,
+which is a list of ordered pairs [left, right] which you can think of as 
+meaning left<=right.  The predicate to define is 
+my_topo_sort(Partial_order, Total_order).
+
+For example, we might have [[left_sock, left_shoe], [right_sock, right_shoe]]
+to describe the constraints on the order in which to get dressed.
+
+A topological sort of a partial order then produces a total order, which is a
+linearization consistent with the partial order.  For the example above, 
+[left_sock, left_shoe, right_sock, right_shoe] and
+[left_sock, right_sock, left_shoe, right_shoe] would both be acceptable
+linearizations.  No linearization is possible in the case of a circular
+majority, e.g., [[a,b], [b,c], [c,a]], since <= is transitive (unless of course
+a, b, and c are all the same).
+
+To code a topological sort in PROLOG we can use "negation as failure" so that
+if we cannot prove two elements in the list to be topologically sorted are
+out of order, we can assume they are not out of order (the closed-world
+assumption).  That allows us to say an element of a list is the max if we can't
+prove it's not the max.
+
+For the example above, first make a list of all the elements in all the
+constraints: [left_sock, left_shoe, right_sock, right_shoe].  Then eliminate
+duplicates (if any).  Next sort as in problem 1 but with my_max finding an 
+element M which you can't prove is not the maximum (i.e., you can't prove there
+is a constraint [M, M2] in the list of constraints, which would mean M2 >= M 
+and M would not be guaranteed to be the maximum).
+
+Name your program hw3pr2.pl.  Don't forget to try lots of test cases in addition
+to 
+?-my_topo_sort([[left_sock, left_shoe], [right_sock, right_shoe]], TotalOrder).
+
+3. (20 points) Add the next generation to Figure 8.7 (i.e., William's wife and
+children, etc.) and then do Exercise 8.14 on page 318 in PROLOG.  However, you 
+do not need to write mth cousin n times removed.  You may add additional 
+predicates if needed.  Follow the PROLOG convention of only capitalizing 
+variable names; e.g,
+
+	?- mother(X, charles).
+
+returns X = elizabeth.  You should write enough predicates to deduce
+
+	?- grandchild(X, elizabeth).
+	?- brother_in_law(X, diana).
+	?- ancestor(X, eugenie).
+
+as specified, plus
+
+	?- cousin(X, charlotte).
+
+Name your program hw3pr3.pl.
+
+Hints:  Remember gprolog requires that you place all statements for each 
+predicate together.  Also, be careful writing too many statements or you may 
+cause an infinite loop, e.g.,
+
+	child(A, B) :- parent(B, A).
+	parent(A, B) :- child(B, A).
+
+is true logically but may cause PROLOG to loop till stack space is exhausted.
+
+OPTIONAL EXTRA CREDIT
+=====================
+4. (10 points)  Problem 3 returns true for ancestor(george, george), unless
+you used database semantics, but according to the less-than-memorable Ray 
+Stevens song (https://www.youtube.com/watch?v=eYlJH81dSiw and
+and www.metrolyrics.com/im-my-own-grandpa-lyrics-ray-stevens.html), problem 3
+can be extended to prove that you are your own grandpa!
+
+The story (from Niklaus Wirth's "Algorithms + Data Structures = Programs")
+is as follows:
+                 I married a widow W who has a grown daughter D.  My
+                 father F, who visited us quite often, fell in love with 
+                 my step-daughter and married her.  Hence my father 
+                 became my son-in-law and my step-daughter became my 
+                 mother.  Some months later, my wife gave birth to a son 
+                 S1, who became the brother-in-law of my father, as well 
+                 as my uncle.  The wife of my father, that is, my 
+                 step-daughter, also had a son S2.
+
+First write the facts and relationships in the song as predicate calculus 
+clauses, e.g., "If X is the child of Y and Y is the child of Z and Z is male 
+then Z is the grandpa of X" becomes 
+        Child(X,Y) AND Child(Y,Z) AND Male(Z) --> Grandpa(Z,X)
+and so on, and then write as PROLOG statements.  Note:  You will need to be 
+pretty loose in your definitions of family relationships; e.g., stepchild must 
+also count as child.  Also, you will have to write explicitly some necessary 
+clauses which are only implied by the song, e.g., Male(me). The gprolog query 
+is then
+        ?-grandpa(me,me).
+Name your program hw3pr4.pl.
