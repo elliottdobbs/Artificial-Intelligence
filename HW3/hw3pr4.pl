@@ -26,7 +26,7 @@ male(s2).
 child(X, Y) :- father(X, Y).
 child(X, Y) :- mother(X, Y).
 
-grandpa(Z, X) :- male(Z), child(Y, Z), child(X, Y).
+grandpa(Z, X) :- male(Z), child(Y, Z), child(X, Y), !.
 
 
 
