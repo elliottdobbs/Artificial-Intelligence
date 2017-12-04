@@ -732,7 +732,7 @@ int main(){
     cout << "Getting input data..." << endl;
     int inputStateIter = 0;
     for (int i = 1; i < testNumber; ++i){
-        if (i % 100 == 0)
+        //if (i % 100 == 0)
             cout << i << endl;
         
         bool found = false;
@@ -763,6 +763,9 @@ int main(){
         ++inputStateIter;
         if (inputStateIter > maxTestStateNumber)
             inputStateIter = 0;
+    }
+    for (int i = 0; i < 29; ++i){
+        myfile[i].close();
     }
     
     cout << "Input Obtained" << endl;
