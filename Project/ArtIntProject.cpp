@@ -721,6 +721,7 @@ int main(){
     
     for (int i = 0; i < 29; ++i){
         string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
+        cout << fileName << endl;
         myfile[i].open(fileName, ios::binary);
     }
     
