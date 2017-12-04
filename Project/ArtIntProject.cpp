@@ -736,9 +736,8 @@ int main(){
             while (myfile.read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
                 
                 randomChance = rand() % 1000;
-                cout << howdy << endl;
                 
-                if (randomChance == 1){
+                if (randomChance == 1 || inputStateIter == 0 || inputStateIter == 1){
                     //Parsing input
                     vector<double> inputActivation = getInputVector(howdy);
                     exampleInputActivations.push_back(inputActivation);
