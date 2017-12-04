@@ -1,0 +1,68 @@
+%Elliott Dobbs
+%CSCE 420
+%Due: November 15, 2017
+%hw3pr3.pl
+
+mother(mum, elizabeth).
+mother(mum, margaret).
+mother(elizabeth, charles).
+mother(elizabeth, anne).
+mother(elizabeth, andrew).
+mother(elizabeth, edward).
+mother(kydd, diana).
+mother(diana, william).
+mother(diana, harry).
+mother(anne, peter).
+mother(anne, zara).
+mother(sarah, beatrice).
+mother(sarah, eugenie).
+mother(sophie, louise).
+mother(sophie, james).
+mother(catherine, george2).
+mother(catherine, charlotte).
+mother(autumn, savannah).
+mother(autumn, isla).
+mother(zara, mia).
+
+father(george, elizabeth).
+father(george, margaret).
+father(philip, charles).
+father(philip, anne).
+father(philip, andrew).
+father(philip, edward).
+father(spencer, diana).
+father(charles, william).
+father(charles, harry).
+father(mark, peter).
+father(mark, zara).
+father(andrew, beatrice).
+father(andrew, eugenie).
+father(edward, louise).
+father(edward, james).
+father(william, george2).
+father(william, charlotte).
+father(peter, savannah).
+father(peter, isla).
+father(mike, mia).
+
+spouse(george, mum).
+spouse(elizabeth, philip).
+spouse(spencer, kydd).
+spouse(diana, charles).
+spouse(anne, mark).
+spouse(andrew, sarah).
+spouse(edward, sophie).
+spouse(william, catherine).
+spouse(peter, autumn).
+spouse(zara, mike).
+
+grandchild(X, Y) :- mother(X, M), mother(M, Y).
+grandchild(X, Y) :- mother(X, M), father(M, Y).
+grandchild(X, Y) :- father(X, M), mother(M, Y).
+grandchild(X, Y) :- father(X, M), father(M, Y).
+
+
+
+
+
+
