@@ -725,6 +725,7 @@ int main(){
     cout << "Getting input data..." << endl;
     int inputStateIter = 0;
     for (int i = 1; i < testNumber; ++i){
+        cout << i << endl;
         
         bool found = false;
         while (found == false){
@@ -788,7 +789,8 @@ int main(){
         
         while (userInputActivation.size() == 0){
             
-            string fileName = "data/" + to_string(stateChosen) + "states.bin";
+            //string fileName = "data/" + to_string(stateChosen) + "states.bin";
+            string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(inputStateIter) + "states.bin";
             myfile.open(fileName, ios::binary);
             
             while (myfile.read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
