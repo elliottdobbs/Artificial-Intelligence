@@ -729,12 +729,14 @@ int main(){
         bool found = false;
         while (found == false){
             
-            string fileName = "data/" + to_string(inputStateIter) + "states.bin";
+            //string fileName = "data/" + to_string(inputStateIter) + "states.bin";
+            string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(inputStateIter) + "states.bin";
             myfile.open(fileName, ios::binary);
             
             while (myfile.read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
                 
                 randomChance = rand() % 1000;
+                cout << howdy << endl;
                 
                 if (randomChance == 1){
                     //Parsing input
@@ -757,31 +759,6 @@ int main(){
             inputStateIter = 0;
     }
     
-//    int testIterator = 0, stateIterator = 0;
-//    while (testIterator < testNumber){
-//
-//        string fileName = "data/" + to_string(stateIterator) + "states.bin";
-//        myfile.open(fileName, ios::binary);
-//
-//        while (myfile.read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
-//
-//            //Parsing input
-//            vector<double> inputActivation = getInputVector(howdy);
-//            exampleInputActivations.push_back(inputActivation);
-//
-//            //Getting output activations
-//            vector<double> outputActivation = getOutputVector(randomState);
-//            exampleOutputActivations.push_back(outputActivation);
-//            ++testIterator;
-//
-//            if (testIterator == testNumber)
-//                break;
-//        }
-//        ++stateIterator;
-//
-//        myfile.close();
-//
-//    }
     cout << "Input Obtained" << endl;
     
     //generate the sigmoid table
