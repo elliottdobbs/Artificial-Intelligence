@@ -721,6 +721,7 @@ int main(){
     
     for (int i = 0; i < 29; ++i){
         string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
+        //string fileName = "Data/" + to_string(i) + "states.bin";
         cout << fileName << endl;
         myfile[i].open(fileName, ios::binary);
     }
@@ -758,6 +759,7 @@ int main(){
         if (inputStateIter > maxTestStateNumber)
             inputStateIter = 0;
     }
+    
     for (int i = 0; i < 29; ++i){
         myfile[i].close();
     }
@@ -792,8 +794,8 @@ int main(){
         
         while (userInputActivation.size() == 0){
             
-            //string fileName = "data/" + to_string(stateChosen) + "states.bin";
-            string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(inputStateIter) + "states.bin";
+            string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
+            //string fileName = "Data/" + to_string(stateChosen) + "states.bin";
             myfile[0].open(fileName, ios::binary);
             
             while (myfile[0].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
