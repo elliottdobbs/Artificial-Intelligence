@@ -732,8 +732,6 @@ int main(){
     cout << "Getting input data..." << endl;
     int inputStateIter = 0;
     for (int i = 1; i < testNumber; ++i){
-        //if (i % 100 == 0)
-            cout << i << endl;
         
         bool found = false;
         while (found == false){
@@ -743,6 +741,7 @@ int main(){
                 randomChance = rand() % 100;
                 
                 if (randomChance == 1 || inputStateIter == 0){
+                    cout << inputStateIter << endl;
                     //Parsing input
                     vector<double> inputActivation = getInputVector(howdy);
                     exampleInputActivations.push_back(inputActivation);
@@ -783,7 +782,7 @@ int main(){
     cout << "Created Neural Network..." << endl;
     
     //Performing the back-Propigation
-    cout << "Propigating network..." << endl;
+    cout << "Training network..." << endl;
     NeuroNetwork resultingNetwork = backPropLearning(exampleInputActivations,
                                                      exampleOutputActivations,
                                                      network, learningCycles);
