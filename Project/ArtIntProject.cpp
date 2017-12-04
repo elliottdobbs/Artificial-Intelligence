@@ -785,8 +785,8 @@ int main(){
     cin >> maxTestStateNumber;
     
     for (int i = 0; i < 29; ++i){
-        //string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
-        string fileName = "Data/" + to_string(i) + "states.bin";
+        string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
+        //string fileName = "Data/" + to_string(i) + "states.bin";
         myfile[i].open(fileName, ios::binary);
     }
     
@@ -858,8 +858,8 @@ int main(){
         
         while (userInputActivation.size() == 0){
             
-            //string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
-            string fileName = "Data/" + to_string(stateChosen) + "states.bin";
+            string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
+            //string fileName = "Data/" + to_string(stateChosen) + "states.bin";
             myfile[0].open(fileName, ios::binary);
             
             while (myfile[0].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
@@ -908,8 +908,8 @@ int main(){
         cin >> stateChosen;
         
         
-        //string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
-        string fileName = "Data/" + to_string(stateChosen) + "states.bin";
+        string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
+        //string fileName = "Data/" + to_string(stateChosen) + "states.bin";
         myfile[0].open(fileName, ios::binary);
         
         while (myfile[0].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
