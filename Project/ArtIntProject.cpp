@@ -11,6 +11,7 @@
 #include <vector>
 #include <bitset>
 #include <math.h>
+#include <cmath>
 using namespace std;
 
 vector<double> sigmoid;
@@ -34,6 +35,68 @@ struct Node{
 struct NeuroNetwork{
     vector< vector<Node> > layers;
 };
+
+int manhattenDistance(vector<double> input){
+    
+    int gameState[4][4] = {{16, 16, 16, 16}, {16, 16, 16, 16}, {16, 16, 16, 16}, {16, 16, 16, 16}};
+    
+    for (int i = 0; i < input.size(); ++i){
+        
+        if (input[i] == 1){
+            for (int gameIter = 1; gameIter < 16; ++gameIter){
+                if (gameState[gameIter / 4][gameIter % 4] == 16){
+                    gameState[gameIter / 4][gameIter % 4] = 15 - (i % 16);
+                    break;
+                }
+            }
+        }
+    }
+    
+    int check[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    
+    for (int i = 0; i < 4; ++i){
+        for (int j = 0; j < 4; ++j){
+            if (i == 0 && j == 0)
+                continue;
+            else{
+                check[gameState[i][j]] = 1;
+            }
+        }
+    }
+    
+    for (int i = 0; i < 16; ++i){
+        if (check[i] == 0){
+            gameState[0][0] = i;
+            break;
+        }
+    }
+    
+    int mDistance = 0, igoal, jgoal;
+    int goalState[4][4] = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}};
+    
+    for (int i = 0; i < 4; ++i){
+        for (int j = 0; j < 4; ++j){
+            
+            for (int x = 0; x < 4; ++x){
+                for(int y = 0; y < 4; ++y){
+                    if (goalState[x][y] == gameState[i][j]){
+                        igoal = x;
+                        jgoal = y;
+                        break;
+                    }
+                }
+            }
+            
+            int xdistance = abs(igoal-i);
+            int ydistance = abs(jgoal-j);
+            
+            if (gameState[i][j] != 0)
+                mDistance += xdistance + ydistance;
+        }
+    }
+    
+    return mDistance;
+}
 
 void generateSigmoid(){
     double x, sig;
@@ -556,7 +619,9 @@ NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
     
     //for each example...
     for (int example = 0; example < inputActivations.size(); ++example){
-        
+        if (example % 1000 == 999)
+            cout << "Propigated " << example + 1 << " input examples..." << endl;
+            
         //Set input activations
         for (int inputLayerNode = 0;
              inputLayerNode < network.layers[0].size();
@@ -720,9 +785,8 @@ int main(){
     cin >> maxTestStateNumber;
     
     for (int i = 0; i < 29; ++i){
-        string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
-        //string fileName = "Data/" + to_string(i) + "states.bin";
-        cout << fileName << endl;
+        //string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
+        string fileName = "Data/" + to_string(i) + "states.bin";
         myfile[i].open(fileName, ios::binary);
     }
     
@@ -786,7 +850,7 @@ int main(){
     cout << "Neural Network Trained..." << endl << endl;
     
     //User choosing input states
-    int continueInput = 1, stateChosen;
+    int continueInput = 1, stateChosen, manDist;
     vector<double> userInputActivation;
     while (continueInput == 1) {
         cout << "Input an integer (0-28) for which state pool you want\nto choose from: ";
@@ -794,18 +858,18 @@ int main(){
         
         while (userInputActivation.size() == 0){
             
-            string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
-            //string fileName = "Data/" + to_string(stateChosen) + "states.bin";
+            //string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
+            string fileName = "Data/" + to_string(stateChosen) + "states.bin";
             myfile[0].open(fileName, ios::binary);
             
             while (myfile[0].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
                 
                 randomChance = rand() % 1000^(stateChosen+1);
                 
-                if (randomChance == 1){
+                if (randomChance == 1 || stateChosen == 0){
                     //Parsing input
                     userInputActivation = getInputVector(howdy);
-                    
+                    manDist = manhattenDistance(userInputActivation);
                     break;
                 }
             }
@@ -814,7 +878,6 @@ int main(){
         
         resultingNetwork = progigate(userInputActivation, resultingNetwork);
         
-        cout << endl << endl << "Here are your results!" << endl;
         double max = -10.0;
         int maxIter;
         for (int i = 0; i < 29; ++i){
@@ -824,11 +887,74 @@ int main(){
             }
             cout << i << " : " << resultingNetwork.layers[resultingNetwork.layers.size() - 1][i].outputActivation << endl;
         }
-        cout << endl << "Max number was : " << max << "\nAt: " << maxIter << endl;
+        cout << endl << "Max activation was : " << max << endl;
+        cout << "At: " << maxIter << endl;
+        cout << "Manhatten Distance: " << manDist << endl;
+        cout << "result - Manhatten Distance: " << maxIter - manDist << endl;
         cout << endl << endl;
         cout << "continue? (1/0) : ";
         cin >> continueInput;
         userInputActivation.clear();
+    }
+    
+    
+    
+    //User choosing input state FILES
+    continueInput = 1;
+    int statesImproved;
+    vector<int> differences, results;
+    while (continueInput == 1) {
+        cout << "Input an integer (0-28) for which state pool you want: ";
+        cin >> stateChosen;
+        
+        
+        //string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
+        string fileName = "Data/" + to_string(stateChosen) + "states.bin";
+        myfile[0].open(fileName, ios::binary);
+        
+        while (myfile[0].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
+            
+            userInputActivation = getInputVector(howdy);
+            manDist = manhattenDistance(userInputActivation);
+            resultingNetwork = progigate(userInputActivation, resultingNetwork);
+            
+            double max = -10.0;
+            int maxIter;
+            for (int i = 0; i < 29; ++i){
+                if (resultingNetwork.layers[resultingNetwork.layers.size() - 1][i].outputActivation > max){
+                    max = resultingNetwork.layers[resultingNetwork.layers.size() - 1][i].outputActivation;
+                    maxIter = i;
+                }
+            }
+            results.push_back(maxIter);
+            differences.push_back(maxIter - manDist);
+        }
+        myfile[0].close();
+        
+        int average = 0;
+        for (int i = 0; i < differences.size(); ++i){
+            average += differences[i];
+        }
+        cout << "Average Result - Manhatten Distance : " << (double)average/differences.size() << endl;
+        average = 0;
+        for (int i = 0; i < results.size(); ++i){
+            if (results[i] > stateChosen)
+                ++average;
+            if (results[i] <= stateChosen && differences[i] > 0)
+                ++statesImproved;
+        }
+        cout << "# of States overestimated - # of states total: " << average << "-" << results.size() << endl;
+        cout << "# of states improved: " << statesImproved << endl;
+        cout << "% of states improved: " << (double)statesImproved/results.size() << endl;
+        cout << "% of states NOT improved: " << 1.0 - (double)statesImproved/results.size() << endl;
+        cout << endl << endl;
+        cout << "continue? (1/0) : ";
+        cin >> continueInput;
+        
+        statesImproved = 0;
+        userInputActivation.clear();
+        results.clear();
+        differences.clear();
     }
     
     return 1;
