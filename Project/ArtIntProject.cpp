@@ -740,9 +740,9 @@ int main(){
             
             while (myfile[inputStateIter].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
                 
-                randomChance = rand() % 1000;
+                randomChance = rand() % 100;
                 
-                if (randomChance == 1 || inputStateIter == 0 || inputStateIter == 1){
+                if (randomChance == 1 || inputStateIter == 0){
                     //Parsing input
                     vector<double> inputActivation = getInputVector(howdy);
                     exampleInputActivations.push_back(inputActivation);
@@ -755,10 +755,10 @@ int main(){
                     break;
                 }
             }
+            
+            myfile[inputStateIter].clear();
+            myfile[inputStateIter].seekg(0, myfile[inputStateIter].beg);
         }
-        
-        myfile[inputStateIter].clear();
-        myfile[inputStateIter].seekg(0, myfile[inputStateIter].beg);
         
         ++inputStateIter;
         if (inputStateIter > maxTestStateNumber)
