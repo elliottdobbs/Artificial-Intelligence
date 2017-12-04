@@ -710,7 +710,7 @@ NeuroNetwork progigate(vector<double> inputActivations, NeuroNetwork network){
 int main(){
     
     //Getting input file
-    ifstream myfile;
+    ifstream myfile[29];
     uint64_t howdy;
     vector< vector<double> > exampleInputActivations;
     vector< vector<double> > exampleOutputActivations;
@@ -724,20 +724,21 @@ int main(){
     cout << "Enter the amount of learning cycles: ";
     cin >> learningCycles;
     
+    for (int i = 0; i < 29; ++i){
+        string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
+        myfile[i].open(fileName, ios::binary);
+    }
+    
     cout << "Getting input data..." << endl;
     int inputStateIter = 0;
     for (int i = 1; i < testNumber; ++i){
-        if (i % 100 == 99)
+        if (i % 100 == 0)
             cout << i << endl;
         
         bool found = false;
         while (found == false){
             
-            //string fileName = "data/" + to_string(inputStateIter) + "states.bin";
-            string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(inputStateIter) + "states.bin";
-            myfile.open(fileName, ios::binary);
-            
-            while (myfile.read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
+            while (myfile[inputStateIter].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
                 
                 randomChance = rand() % 1000;
                 
@@ -754,9 +755,11 @@ int main(){
                     break;
                 }
             }
-        
-        myfile.close();
         }
+        
+        myfile[inputStateIter].clear();
+        myfile[inputStateIter].seekg(0, myfile[inputStateIter].beg);
+        
         ++inputStateIter;
         if (inputStateIter > maxTestStateNumber)
             inputStateIter = 0;
@@ -794,9 +797,9 @@ int main(){
             
             //string fileName = "data/" + to_string(stateChosen) + "states.bin";
             string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(inputStateIter) + "states.bin";
-            myfile.open(fileName, ios::binary);
+            myfile[0].open(fileName, ios::binary);
             
-            while (myfile.read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
+            while (myfile[0].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
                 
                 randomChance = rand() % 1000^(stateChosen+1);
                 
@@ -807,7 +810,7 @@ int main(){
                     break;
                 }
             }
-            myfile.close();
+            myfile[0].close();
         }
         
         resultingNetwork = progigate(userInputActivation, resultingNetwork);
