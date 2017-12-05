@@ -633,116 +633,121 @@ NeuroNetwork makeWeights(NeuroNetwork net){
 //Main function to teach the neural network.  Follows the pseudocode from toe book.  Takes in a set of example inputs and expected outputs, and a blank network.  Calls the makeWeights function to assign random weights to the links.  Then for each input state, propigates the input forward to the output layer, calculates the deltas, and propigates backwards calculating delta errors.  Finally updates the weights based on the errors and moves on to the next example.
 NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
                               vector< vector<double> > outputActivations,
-                              NeuroNetwork network){
+                              NeuroNetwork network,
+                              int learningCycles){
     
     //Generate random link weights
     network = makeWeights(network);
     
-    //for each example...
-    for (int example = 0; example < inputActivations.size(); ++example){
-        if (example % 1000 == 999)
-            cout << "Propigated " << example + 1 << " input examples..." << endl;
-            
-        //Set input activations
-        for (int inputLayerNode = 0;
-             inputLayerNode < network.layers[0].size();
-             ++inputLayerNode){
-            
-            network.layers[0][inputLayerNode].outputActivation = inputActivations[example][inputLayerNode];
-        }
+    //Learning Cycles
+    for (int cycle = 0; cycle < learningCycles; ++ cycle){
         
-        //Propigate input forward to output; layer by layer
-        for (int layer = 1; layer < network.layers.size(); ++layer){
-            for (int node = 0; node < network.layers[layer].size(); ++node){
+        //for each example...
+        for (int example = 0; example < inputActivations.size(); ++example){
+            if (example % 1000 == 999)
+                cout << "Cycle: " << cycle << ".  Propigated " << example + 1 << " input examples..." << endl;
+            
+            //Set input activations
+            for (int inputLayerNode = 0;
+                 inputLayerNode < network.layers[0].size();
+                 ++inputLayerNode){
                 
-                //Get weighted sum
-                double weightedSum = 0.0;
-                for (int inputLink = 0;
-                     inputLink < network.layers[layer][node].inputLinks.size();
-                     ++inputLink){
-                    
-                    weightedSum +=  network.layers[layer][node].inputLinks[inputLink].weight *
-                    network.layers[layer - 1][network.layers[layer][node].inputLinks[inputLink].sendingLink].outputActivation;
-                }
-                
-                //Putting weighted sum into Sigmoid function
-                //This next line decodes the weighted sum into an integer to use as input to the sigmoid (or hyperbolic tangent) vector
-                int sum = (int)((weightedSum + 5) * 1000);
-                
-                //Use Sigmoid for last layer
-                if (layer == network.layers.size() - 1){
-                    if (sum < 0)
-                        network.layers[layer][node].outputActivation = 0.0;
-                    else if (sum >= 10000)
-                        network.layers[layer][node].outputActivation = sigmoid[9999];
-                    else
-                        network.layers[layer][node].outputActivation = sigmoid[sum];
-                }
-                
-                //Use hyperbolic tangent for all other layers
-                else{
-                    if (sum < 0)
-                        network.layers[layer][node].outputActivation = -1;
-                    else if (sum >= 10000)
-                        network.layers[layer][node].outputActivation = hyperbolicTan[9999];
-                    else
-                        network.layers[layer][node].outputActivation = hyperbolicTan[sum];
-                }
-                
+                network.layers[0][inputLayerNode].outputActivation = inputActivations[example][inputLayerNode];
             }
-        }
-        
-        //Propigate deltas backwards
-        for (int node = 0;
-             node < network.layers[network.layers.size() - 1].size();
-             ++node){
             
-            //Calculating error
-            double y_error = outputActivations[example][node] - network.layers[network.layers.size() - 1][node].outputActivation;
-            if (y_error > 0)
-                y_error *= 2;
-            
-            //Calculating delta
-            network.layers[network.layers.size() - 1][node].delta = (network.layers[network.layers.size() - 1][node].outputActivation) * (1 - network.layers[network.layers.size() - 1][node].outputActivation) * y_error;
-        }
-        
-        //For the rest of the layers, caclulate deltas based on next layer deltas
-        double summedWeightedJs;
-        for (int layer = (network.layers.size() - 2); layer >= 0; --layer){
-            for (int node = 0; node < network.layers[layer].size(); ++node){
-                
-                summedWeightedJs = 0.0;
-                for (int deltaJs = 0; deltaJs < network.layers[layer + 1].size(); ++ deltaJs){
-                    summedWeightedJs += network.layers[layer][node].outputLinks[deltaJs].weight * network.layers[layer + 1][deltaJs].delta;
-                }
-                
-                network.layers[layer][node].delta = (1 - (network.layers[layer][node].outputActivation * network.layers[layer][node].outputActivation)) * summedWeightedJs;
-            }
-        }
-        
-        //Update weights
-        for (int layer = 0; layer < network.layers.size(); ++layer){
-            
-            //Update output weights
-            if (layer != network.layers.size() - 1){
+            //Propigate input forward to output; layer by layer
+            for (int layer = 1; layer < network.layers.size(); ++layer){
                 for (int node = 0; node < network.layers[layer].size(); ++node){
-                    for (int nodeLink = 0;
-                         nodeLink < network.layers[layer][node].outputLinks.size();
-                         ++nodeLink){
+                    
+                    //Get weighted sum
+                    double weightedSum = 0.0;
+                    for (int inputLink = 0;
+                         inputLink < network.layers[layer][node].inputLinks.size();
+                         ++inputLink){
                         
-                        network.layers[layer][node].outputLinks[nodeLink].weight += alpha * network.layers[layer][node].outputActivation * network.layers[layer + 1][network.layers[layer][node].outputLinks[nodeLink].recievingLink].delta;
+                        weightedSum +=  network.layers[layer][node].inputLinks[inputLink].weight *
+                        network.layers[layer - 1][network.layers[layer][node].inputLinks[inputLink].sendingLink].outputActivation;
+                    }
+                    
+                    //Putting weighted sum into Sigmoid function
+                    //This next line decodes the weighted sum into an integer to use as input to the sigmoid (or hyperbolic tangent) vector
+                    int sum = (int)((weightedSum + 5) * 1000);
+                    
+                    //Use Sigmoid for last layer
+                    if (layer == network.layers.size() - 1){
+                        if (sum < 0)
+                            network.layers[layer][node].outputActivation = 0.0;
+                        else if (sum >= 10000)
+                            network.layers[layer][node].outputActivation = sigmoid[9999];
+                        else
+                            network.layers[layer][node].outputActivation = sigmoid[sum];
+                    }
+                    
+                    //Use hyperbolic tangent for all other layers
+                    else{
+                        if (sum < 0)
+                            network.layers[layer][node].outputActivation = -1;
+                        else if (sum >= 10000)
+                            network.layers[layer][node].outputActivation = hyperbolicTan[9999];
+                        else
+                            network.layers[layer][node].outputActivation = hyperbolicTan[sum];
+                    }
+                    
+                }
+            }
+            
+            //Propigate deltas backwards
+            for (int node = 0;
+                 node < network.layers[network.layers.size() - 1].size();
+                 ++node){
+                
+                //Calculating error
+                double y_error = outputActivations[example][node] - network.layers[network.layers.size() - 1][node].outputActivation;
+                if (y_error > 0)
+                    y_error *= 2;
+                
+                //Calculating delta
+                network.layers[network.layers.size() - 1][node].delta = (network.layers[network.layers.size() - 1][node].outputActivation) * (1 - network.layers[network.layers.size() - 1][node].outputActivation) * y_error;
+            }
+            
+            //For the rest of the layers, caclulate deltas based on next layer deltas
+            double summedWeightedJs;
+            for (int layer = (network.layers.size() - 2); layer >= 0; --layer){
+                for (int node = 0; node < network.layers[layer].size(); ++node){
+                    
+                    summedWeightedJs = 0.0;
+                    for (int deltaJs = 0; deltaJs < network.layers[layer + 1].size(); ++ deltaJs){
+                        summedWeightedJs += network.layers[layer][node].outputLinks[deltaJs].weight * network.layers[layer + 1][deltaJs].delta;
+                    }
+                    
+                    network.layers[layer][node].delta = (1 - (network.layers[layer][node].outputActivation * network.layers[layer][node].outputActivation)) * summedWeightedJs;
+                }
+            }
+            
+            //Update weights
+            for (int layer = 0; layer < network.layers.size(); ++layer){
+                
+                //Update output weights
+                if (layer != network.layers.size() - 1){
+                    for (int node = 0; node < network.layers[layer].size(); ++node){
+                        for (int nodeLink = 0;
+                             nodeLink < network.layers[layer][node].outputLinks.size();
+                             ++nodeLink){
+                            
+                            network.layers[layer][node].outputLinks[nodeLink].weight += alpha * network.layers[layer][node].outputActivation * network.layers[layer + 1][network.layers[layer][node].outputLinks[nodeLink].recievingLink].delta;
+                        }
                     }
                 }
-            }
-            
-            //set input weights based on the output link from the previous layer
-            if (layer != 0){
-                for (int node = 0; node < network.layers[layer].size(); ++node){
-                    for (int nodeLink = 0;
-                         nodeLink < network.layers[layer][node].inputLinks.size();
-                         ++nodeLink){
-                        
-                        network.layers[layer][node].inputLinks[nodeLink].weight = network.layers[layer - 1][network.layers[layer][node].inputLinks[nodeLink].sendingLink].outputLinks[node].weight;
+                
+                //set input weights based on the output link from the previous layer
+                if (layer != 0){
+                    for (int node = 0; node < network.layers[layer].size(); ++node){
+                        for (int nodeLink = 0;
+                             nodeLink < network.layers[layer][node].inputLinks.size();
+                             ++nodeLink){
+                            
+                            network.layers[layer][node].inputLinks[nodeLink].weight = network.layers[layer - 1][network.layers[layer][node].inputLinks[nodeLink].sendingLink].outputLinks[node].weight;
+                        }
                     }
                 }
             }
@@ -815,6 +820,8 @@ int main(){
     cin >> testNumber;
     cout << "Enter the max state number to train on: ";
     cin >> maxTestStateNumber;
+    cout << "Enter the number of learning cycles: ";
+    cin >> learningCycles;
     
     //Opening the input files.  The commented line is for using the network on my local machine, with my local data
     for (int i = 0; i < 29; ++i){
@@ -887,7 +894,7 @@ int main(){
     cout << "Training network..." << endl;
     NeuroNetwork resultingNetwork = backPropLearning(exampleInputActivations,
                                                      exampleOutputActivations,
-                                                     network);
+                                                     network, learningCycles);
     cout << "Neural Network Trained..." << endl << endl;
     
     //User choosing input files to get a random state to propigate
@@ -980,7 +987,7 @@ int main(){
         myfile[0].close();
         
         //Displaying results
-        int average = 0;
+        int average = 0, numberOfImprovableStates = 0;
         for (int i = 0; i < differences.size(); ++i){
             average += differences[i];
         }
@@ -991,11 +998,16 @@ int main(){
                 ++average;
             if (results[i] <= stateChosen && differences[i] > 0)
                 ++statesImproved;
+            if (((differences[i] - results[i]) * -1) != stateChosen)
+                ++numberOfImprovableStates;
         }
         cout << "# of States overestimated - # of states total: " << average << "-" << results.size() << endl;
         cout << "# of states improved: " << statesImproved << endl;
+        cout << "# of improvable states: " << numberOfImprovableStates << endl;
         cout << "% of states improved: " << (double)statesImproved/results.size() << endl;
         cout << "% of states NOT improved: " << 1.0 - (double)statesImproved/results.size() << endl;
+        if (numberOfImprovableStates != 0)
+            cout << "% of improvable states that were improved: " << (double)statesImproved/numberOfImprovableStates << endl;
         cout << endl << endl;
         cout << "continue? (1/0) : ";
         cin >> continueInput;
