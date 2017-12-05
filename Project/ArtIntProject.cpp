@@ -16,30 +16,35 @@ using namespace std;
 
 vector<double> sigmoid;
 vector<double> hyperbolicTan;
-double alpha = 0.05;
+double alpha = 0.1;
 
+//Link structure to represent weighted links between nodes
 struct Link{
     int sendingLink;
     int recievingLink;
     double weight;
 };
 
+//Node structure to represent a node in the Nerual Network
 struct Node{
     vector<Link> inputLinks;
     vector<Link> outputLinks;
-    int someVaribaleForFunctionSelection;
     double outputActivation;
     double delta;
 };
 
+//Nerual network structure
 struct NeuroNetwork{
     vector< vector<Node> > layers;
 };
 
+//Algorithm to caclulate the manhatten distance based on a 240 vector input state
 int manhattenDistance(vector<double> input){
+    
     
     int gameState[4][4] = {{16, 16, 16, 16}, {16, 16, 16, 16}, {16, 16, 16, 16}, {16, 16, 16, 16}};
     
+    //Getting he current gamestate into the gamestate array
     for (int i = 0; i < input.size(); ++i){
         
         if (input[i] == 1){
@@ -54,6 +59,7 @@ int manhattenDistance(vector<double> input){
     
     int check[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     
+    //Finding which tile belongs in [0][0]
     for (int i = 0; i < 4; ++i){
         for (int j = 0; j < 4; ++j){
             if (i == 0 && j == 0)
@@ -64,6 +70,7 @@ int manhattenDistance(vector<double> input){
         }
     }
     
+    //Setting tile 0 to the appropriate tile number
     for (int i = 0; i < 16; ++i){
         if (check[i] == 0){
             gameState[0][0] = i;
@@ -74,9 +81,11 @@ int manhattenDistance(vector<double> input){
     int mDistance = 0, igoal, jgoal;
     int goalState[4][4] = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12}, {13, 14, 15, 0}};
     
+    //Calculating the manhatten distance
     for (int i = 0; i < 4; ++i){
         for (int j = 0; j < 4; ++j){
             
+            //Getting where the tile is supposed to be
             for (int x = 0; x < 4; ++x){
                 for(int y = 0; y < 4; ++y){
                     if (goalState[x][y] == gameState[i][j]){
@@ -87,9 +96,11 @@ int manhattenDistance(vector<double> input){
                 }
             }
             
+            //Calculating the distance of the tile from its goal location
             int xdistance = abs(igoal-i);
             int ydistance = abs(jgoal-j);
             
+            //If the tile is not 0, add the distance to the manhatten distance
             if (gameState[i][j] != 0)
                 mDistance += xdistance + ydistance;
         }
@@ -98,6 +109,7 @@ int manhattenDistance(vector<double> input){
     return mDistance;
 }
 
+//Function to generate and fill the sigmpoid vector with values from input -5 to 5
 void generateSigmoid(){
     double x, sig;
     
@@ -108,6 +120,7 @@ void generateSigmoid(){
     }
 }
 
+//Function to generate and fill the hyperbolic tangent vector with values from input -5 to 5
 void generateHyperbolicTangent(){
     double x, hyp;
     
@@ -118,6 +131,7 @@ void generateHyperbolicTangent(){
     }
 }
 
+//Function to create the neural network structure.  The variables inside can be changed to desired input. variables like the hidden layers, their sizes, etc.
 NeuroNetwork createNetwork(){
     
     NeuroNetwork net;
@@ -225,13 +239,16 @@ NeuroNetwork createNetwork(){
     return net;
 }
 
+//function to create a 240 vector from a given uint64_t.  The uint64_t is obtained from the input file, then passed here to parse into something we can pass to the propigation algorithm.
 vector<double> getInputVector(uint64_t input){
     
+    //Converting the input to a bitset, then to a string which represents the input state in binary
     vector<double> result;
     bitset<64> x(input);
     string howdy = x.to_string();
     int missingNumber[16] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     
+    //Iterates through the binary string, adding each number as a demultiplexed version into the results vector
     for (int i = 1; i < 16; ++i){
         
         string test = howdy.substr(i*4, 4);
@@ -562,6 +579,7 @@ vector<double> getInputVector(uint64_t input){
     return result;
 }
 
+//Function demultiplex an integer into a binary representation to be used as an expected output for the propigation algorithm
 vector<double> getOutputVector(int input){
     
     vector<double> result;
@@ -576,6 +594,7 @@ vector<double> getOutputVector(int input){
     return result;
 }
 
+//Function that iterates through each of the Links in a network, setting them to a random number between -1 and 1 with 0.001 percision
 NeuroNetwork makeWeights(NeuroNetwork net){
     
     double random;
@@ -611,10 +630,12 @@ NeuroNetwork makeWeights(NeuroNetwork net){
     return net;
 }
 
+//Main function to teach the neural network.  Follows the pseudocode from toe book.  Takes in a set of example inputs and expected outputs, and a blank network.  Calls the makeWeights function to assign random weights to the links.  Then for each input state, propigates the input forward to the output layer, calculates the deltas, and propigates backwards calculating delta errors.  Finally updates the weights based on the errors and moves on to the next example.
 NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
                               vector< vector<double> > outputActivations,
                               NeuroNetwork network){
     
+    //Generate random link weights
     network = makeWeights(network);
     
     //for each example...
@@ -629,7 +650,8 @@ NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
             
             network.layers[0][inputLayerNode].outputActivation = inputActivations[example][inputLayerNode];
         }
-        //Propigate input forward to output
+        
+        //Propigate input forward to output; layer by layer
         for (int layer = 1; layer < network.layers.size(); ++layer){
             for (int node = 0; node < network.layers[layer].size(); ++node){
                 
@@ -644,7 +666,10 @@ NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
                 }
                 
                 //Putting weighted sum into Sigmoid function
+                //This next line decodes the weighted sum into an integer to use as input to the sigmoid (or hyperbolic tangent) vector
                 int sum = (int)((weightedSum + 5) * 1000);
+                
+                //Use Sigmoid for last layer
                 if (layer == network.layers.size() - 1){
                     if (sum < 0)
                         network.layers[layer][node].outputActivation = 0.0;
@@ -653,6 +678,8 @@ NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
                     else
                         network.layers[layer][node].outputActivation = sigmoid[sum];
                 }
+                
+                //Use hyperbolic tangent for all other layers
                 else{
                     if (sum < 0)
                         network.layers[layer][node].outputActivation = -1;
@@ -670,12 +697,16 @@ NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
              node < network.layers[network.layers.size() - 1].size();
              ++node){
             
+            //Calculating error
             double y_error = outputActivations[example][node] - network.layers[network.layers.size() - 1][node].outputActivation;
             if (y_error > 0)
                 y_error *= 2;
             
+            //Calculating delta
             network.layers[network.layers.size() - 1][node].delta = (network.layers[network.layers.size() - 1][node].outputActivation) * (1 - network.layers[network.layers.size() - 1][node].outputActivation) * y_error;
         }
+        
+        //For the rest of the layers, caclulate deltas based on next layer deltas
         double summedWeightedJs;
         for (int layer = (network.layers.size() - 2); layer >= 0; --layer){
             for (int node = 0; node < network.layers[layer].size(); ++node){
@@ -721,6 +752,7 @@ NeuroNetwork backPropLearning(vector< vector<double> > inputActivations,
     return network;
 }
 
+//Function to test the network.  Propigates a given input example throught eh network and returns the network.
 NeuroNetwork progigate(vector<double> inputActivations, NeuroNetwork network){
     
     //Set input activations
@@ -744,7 +776,7 @@ NeuroNetwork progigate(vector<double> inputActivations, NeuroNetwork network){
                 network.layers[layer - 1][network.layers[layer][node].inputLinks[inputLink].sendingLink].outputActivation;
             }
             
-            //Putting weighted sum into Sigmoid function
+            //Use sigmoid if its the last layer
             int sum = (int)((weightedSum + 5) * 1000);
             if (layer == network.layers.size() - 1){
                 if (sum < 0)
@@ -754,6 +786,7 @@ NeuroNetwork progigate(vector<double> inputActivations, NeuroNetwork network){
                 else
                     network.layers[layer][node].outputActivation = sigmoid[sum];
             }
+            //Use hyperbolic tangent if its any other layer
             else{
                 if (sum < 0)
                     network.layers[layer][node].outputActivation = -1;
@@ -771,7 +804,6 @@ NeuroNetwork progigate(vector<double> inputActivations, NeuroNetwork network){
 
 int main(){
     
-    //Getting input file
     ifstream myfile[29];
     uint64_t howdy;
     vector< vector<double> > exampleInputActivations;
@@ -784,24 +816,30 @@ int main(){
     cout << "Enter the max state number to train on: ";
     cin >> maxTestStateNumber;
     
+    //Opening the input files.  The commented line is for using the network on my local machine, with my local data
     for (int i = 0; i < 29; ++i){
         string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(i) + "states.bin";
         //string fileName = "Data/" + to_string(i) + "states.bin";
         myfile[i].open(fileName, ios::binary);
     }
     
+    //Getting the input data.  Data is obtained by iterating through the files geting one random state from each of the files in the range from 0 to the given max file number.  This is done until the given amount of test states is achieved.
     cout << "Getting input data..." << endl;
     int inputStateIter = 0;
     for (int i = 1; i < testNumber; ++i){
         
+        //This forces the loop to go through the current file until a state is found.  Need this since there is a random chance each state is chosen.
         bool found = false;
         while (found == false){
             
+            //Iterates through each state of a file
             while (myfile[inputStateIter].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
                 
                 randomChance = rand() % 100;
                 
+                //Ranadom chance that a file is selected OR if the file is the 0 state file, there is only one state anyways
                 if (randomChance == 1 || inputStateIter == 0){
+                    
                     //Parsing input
                     vector<double> inputActivation = getInputVector(howdy);
                     exampleInputActivations.push_back(inputActivation);
@@ -815,15 +853,18 @@ int main(){
                 }
             }
             
+            //Resetting the ifstream object
             myfile[inputStateIter].clear();
             myfile[inputStateIter].seekg(0, myfile[inputStateIter].beg);
         }
         
+        //Iterates to the next state file
         ++inputStateIter;
         if (inputStateIter > maxTestStateNumber)
             inputStateIter = 0;
     }
     
+    //Closes all the ifstream objects
     for (int i = 0; i < 29; ++i){
         myfile[i].close();
     }
@@ -849,13 +890,15 @@ int main(){
                                                      network);
     cout << "Neural Network Trained..." << endl << endl;
     
-    //User choosing input states
+    //User choosing input files to get a random state to propigate
     int continueInput = 1, stateChosen, manDist;
     vector<double> userInputActivation;
+    
     while (continueInput == 1) {
         cout << "Input an integer (0-28) for which state pool you want\nto choose from: ";
         cin >> stateChosen;
         
+        //gets random state from the given file
         while (userInputActivation.size() == 0){
             
             string fileName = "/pub/faculty_share/daugher/datafiles/data/" + to_string(stateChosen) + "states.bin";
@@ -867,6 +910,7 @@ int main(){
                 randomChance = rand() % 1000^(stateChosen+1);
                 
                 if (randomChance == 1 || stateChosen == 0){
+                    
                     //Parsing input
                     userInputActivation = getInputVector(howdy);
                     manDist = manhattenDistance(userInputActivation);
@@ -876,8 +920,10 @@ int main(){
             myfile[0].close();
         }
         
+        //Propigates the random input state through the network
         resultingNetwork = progigate(userInputActivation, resultingNetwork);
         
+        //Gets the results from the propigation.  Prints each output node and its activation.
         double max = -10.0;
         int maxIter;
         for (int i = 0; i < 29; ++i){
@@ -887,6 +933,7 @@ int main(){
             }
             cout << i << " : " << resultingNetwork.layers[resultingNetwork.layers.size() - 1][i].outputActivation << endl;
         }
+        //Displays results
         cout << endl << "Max activation was : " << max << endl;
         cout << "At: " << maxIter << endl;
         cout << "Manhatten Distance: " << manDist << endl;
@@ -897,12 +944,11 @@ int main(){
         userInputActivation.clear();
     }
     
-    
-    
-    //User choosing input state FILES
+    //User choosing whole input files to get data from
     continueInput = 1;
     int statesImproved;
     vector<int> differences, results;
+    
     while (continueInput == 1) {
         cout << "Input an integer (0-28) for which state pool you want: ";
         cin >> stateChosen;
@@ -912,8 +958,10 @@ int main(){
         //string fileName = "Data/" + to_string(stateChosen) + "states.bin";
         myfile[0].open(fileName, ios::binary);
         
+        //Propigates each state in the given file through the network.
         while (myfile[0].read(reinterpret_cast<char *>(&howdy), sizeof(howdy))){
             
+            //Propigates and get the manhatten distance of each state.
             userInputActivation = getInputVector(howdy);
             manDist = manhattenDistance(userInputActivation);
             resultingNetwork = progigate(userInputActivation, resultingNetwork);
@@ -931,6 +979,7 @@ int main(){
         }
         myfile[0].close();
         
+        //Displaying results
         int average = 0;
         for (int i = 0; i < differences.size(); ++i){
             average += differences[i];
